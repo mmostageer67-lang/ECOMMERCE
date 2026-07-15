@@ -7,7 +7,6 @@ const registerService = async (userData) => {
   if (existingUser) {
     throw new Error('Email already exists');
   }
-
  
   const user = await User.create({
     name,
