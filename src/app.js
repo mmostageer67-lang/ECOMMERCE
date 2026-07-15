@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const authRoutes = require('./modules/auth/auth.routes');
 const hpp = require('hpp');
 const app = express();
 
@@ -21,7 +22,7 @@ app.use(limiter);
 
 app.use(morgan('combined'));
 
-
+app.use('/api/v1/auth', authRoutes);
 
 
 module.exports = app;
