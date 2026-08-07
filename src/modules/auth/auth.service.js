@@ -9,6 +9,7 @@ const registerService = async (userData) => {
     const err = new Error('User with this email already exists');
     err.status = 'fail';
     err.statusCode = 409;
+    err.isOperational = true;
     throw err;
   }
  

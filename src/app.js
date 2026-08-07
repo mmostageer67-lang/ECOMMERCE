@@ -1,8 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const sanitize = require('express-mongo-sanitize');
 const authRoutes = require('./modules/auth/auth.routes');
 const hpp = require('hpp');
 const errorMiddleware = require('./middlewares/errorMiddleware');
@@ -21,9 +21,8 @@ app.use(express.json({limit: '10kb'}));
 app.use(helmet());
 app.use(hpp());
 app.use(limiter);
-
+mongoose.set('sanitizeFilter', true);
 app.use(morgan('combined'));
-app.use(sanitize());
 app.use('/api/v1/auth', authRoutes);
 app.use((req, res, next) => {
   const err = new Error(`Can't find ${req.originalUrl} on this server!`);
