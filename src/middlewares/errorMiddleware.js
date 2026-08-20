@@ -16,6 +16,13 @@ const devError = (req,res, err) => {
       err.isOperational = true;
       return err
     }
+    const doublicateError = (err) => {
+      const msg = `Duplicate field value entered`;
+      err.message = msg;
+      err.statusCode = 409;
+      err.isOperational = true;
+      return err;
+    }
     const prodError = (req, res, err) => {
           const statusCode = err.statusCode || 500;
 
@@ -37,14 +44,16 @@ const errorMiddleware = (err, req, res, next) => {
 
 
 if(process.env.NODE_ENV === 'development') {
- devError(req,res, err)
+ return devError(req,res, err)
 }
-else if (process.env.NODE_ENV === 'production') {
-  if(err.name === 'CastError') {
-    err=   castError(err    );
-  }
-  prodError(req, res, err);
-}
+ if (process.env.NODE_ENV === 'production') {
+  if(err.name === 'CastError')     err=castError(err);
+
+  if (err.code === 11000)err = doublicateError(err);
+    
+
+ return prodError(req, res, err);
 }
 
+return prodError(req, res, err);}
 module.exports = errorMiddleware;
