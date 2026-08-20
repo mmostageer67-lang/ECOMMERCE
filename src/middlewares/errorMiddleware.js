@@ -9,6 +9,13 @@ const devError = (req,res, err) => {
         error: err,
       });
     }
+    const castError = (err) => {
+      const msg = `Invalid ${err.path}: ${err.value}`;
+      err.message = msg;
+      err.statusCode = 400;
+      err.isOperational = true;
+      return err
+    }
     const prodError = (req, res, err) => {
           const statusCode = err.statusCode || 500;
 
@@ -24,13 +31,20 @@ const devError = (req,res, err) => {
         });
       }
     }
+
+
 const errorMiddleware = (err, req, res, next) => {
 
-if(process.env.NODE_ENV === 'development') {
-return devError(req,res, err);
-}
-return  prodError(req, res, err);
-}
 
+if(process.env.NODE_ENV === 'development') {
+ devError(req,res, err)
+}
+else if (process.env.NODE_ENV === 'production') {
+  if(err.name === 'CastError') {
+    err=   castError(err    );
+  }
+  prodError(req, res, err);
+}
+}
 
 module.exports = errorMiddleware;
