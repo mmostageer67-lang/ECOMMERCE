@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
-const authRoutes = require('./modules/auth/auth.routes');
+const routes = require('./routes/index'); 
 const hpp = require('hpp');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const app = express();
@@ -23,7 +23,7 @@ app.use(hpp());
 app.use(limiter);
 mongoose.set('sanitizeFilter', true);
 app.use(morgan('combined'));
-app.use('/api/v1/auth', authRoutes);
+app.use('/api', routes);
 app.use((req, res, next) => {
   const err = new Error(`Can't find ${req.originalUrl} on this server!`);
   err.status = 'fail';
