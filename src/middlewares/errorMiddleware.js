@@ -23,6 +23,18 @@ const devError = (req,res, err) => {
       err.isOperational = true;
       return err;
     }
+    const jwtError = (err) => {
+      err.message = 'Invalid token';
+      err.statusCode = 401;
+      err.isOperational = true;
+      return err;
+    }
+    const tokenExpiredError = (err) => {
+      err.message = 'Token has expired, please login again';
+      err.statusCode = 401;
+      err.isOperational = true;
+      return err;
+    }
     const prodError = (req, res, err) => {
           const statusCode = err.statusCode || 500;
 
@@ -50,7 +62,10 @@ if(process.env.NODE_ENV === 'development') {
   if(err.name === 'CastError')     err=castError(err);
 
   if (err.code === 11000)err = doublicateError(err);
-    
+
+  if (err.name === 'JsonWebTokenError') err = jwtError(err);
+
+  if (err.name === 'TokenExpiredError') err = tokenExpiredError(err);
 
  return prodError(req, res, err);
 }
