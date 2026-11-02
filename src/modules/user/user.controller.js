@@ -1,4 +1,4 @@
-const { getUserById } = require('./user.service');
+const { getUserById,getAllUsers } = require('./user.service');
 
 const getUserByIdController = async (req, res, next) => {
   try {
@@ -12,5 +12,17 @@ const getUserByIdController = async (req, res, next) => {
     next(err);
   }
 };
+const getAllUsersController = async (req, res, next) => {
+  try {
+    const users = await getAllUsers();
 
-module.exports = { getUserByIdController };
+    res.status(200).json({
+      status: 'success',
+      data: { users },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { getUserByIdController, getAllUsersController };

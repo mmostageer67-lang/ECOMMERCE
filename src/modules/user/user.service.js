@@ -20,5 +20,9 @@ const getUserById = async (userId) => {
 
   return user;
 };
+const getAllUsers = async () => {
+  const users =await User.find()
+  return users;
+}
 
-module.exports = { getUserById };
+module.exports = { getUserById, getAllUsers };
